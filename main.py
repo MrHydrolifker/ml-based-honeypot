@@ -28,10 +28,17 @@ SESSION_STORE = {}
 # SETUP CONSOLE LOGGING
 # =====================================================
 logging.basicConfig(
-    stream=sys.stdout,       # Send logs to console
+    stream=sys.stdout,
     level=logging.INFO,
     format="%(asctime)s | %(levelname)s | %(message)s"
 )
+
+# =====================================================
+# ROOT ROUTE FOR HEALTH CHECK
+# =====================================================
+@app.route("/", methods=["GET"])
+def index():
+    return "Honeypot API is live!", 200
 
 # =====================================================
 # TEXT CLEANING
@@ -206,8 +213,9 @@ def honeypot_api():
     })
 
 # =====================================================
-# RUN SERVER
+# RUN SERVER (RENDER-READY)
 # =====================================================
 if __name__ == "__main__":
-    logging.info("🚀 Honeypot API starting...")
-    app.run(host="0.0.0.0", port=8000)
+    port = int(os.environ.get("PORT", 8000))  # Use Render port or fallback
+    logging.info(f"🚀 Honeypot API starting on port {port}...")
+    app.run(host="0.0.0.0", port=port)
